@@ -30,18 +30,11 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
+  final manager = Manager();
   @override
   void initState() {
     super.initState();
-    Manager().init();
-  }
-
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
+    manager.init();
   }
 
   @override
@@ -50,24 +43,57 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         title: Text(widget.title),
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
+      body: Row(
+        children: [
+          Expanded(
+            child: Center(
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: manager.me.cards.map((e) => buildCard(e)).toList(),
+              ),
             ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
+          ),
+          SizedBox(
+            width: 30,
+            child: Column(
+              children: [
+                IconButton(
+                  onPressed: () {
+                    setState(() {
+                      manager.init();
+                    });
+                  },
+                  icon: const Icon(Icons.restore),
+                )
+              ],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
+    );
+  }
+
+  Widget buildCard(String card) {
+    return InkWell(
+      onTap: () {
+        setState(() {
+          manager.shePai(card);
+        });
+      },
+      child: Container(
+        width: 60,
+        height: 80,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(4),
+          border: Border.all(
+            width: 2,
+            color: const Color(0xff666666),
+          ),
+          image: DecorationImage(
+            image: AssetImage('assets/$card.png'),
+            fit: BoxFit.fill,
+          ),
+        ),
       ),
     );
   }
